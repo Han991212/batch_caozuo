@@ -1,0 +1,27 @@
+以下是一个使用batch脚本实现该任务的示例：
+
+```batch
+@echo off
+setlocal enabledelayedexpansion
+
+set search_dir=C:\hzh
+set output_file=output.txt
+
+REM 循环遍历目录下的所有文件，包括子目录中的文件
+for /r "%search_dir%" %%f in (*.txt;*.md) do (
+    REM 逐行读取文件内容
+    for /f "tokens=* delims=" %%l in ('type "%%f"') do (
+        REM 查找包含“.”的行
+        set "line=%%l"
+        set "line=!line:.=!"
+        if not "!line!"=="%%l" (
+            REM 将匹配到的行写入输出文件
+            echo %%f:%%l>>"%output_file%"
+        )
+    )
+)
+```
+
+该脚本使用两个嵌套的循环结构，逐一遍历目标目录下的所有文件，并逐行读取每个文件的内容，检查每行是否包含“.”符号。
+如果某行中包含了“.”，则将其追加写入输出文件。请注意，该脚本仅匹配扩展名为“.txt”或“.md”的文件，
+如需匹配其他扩展名，请修改`for /r`行内的文件过滤条件。
